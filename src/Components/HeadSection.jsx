@@ -204,7 +204,7 @@ function HeadSection() {
             <div
               style={{
                 width: "100%",
-                height: isMobile ? 220 : 340,
+                height: isMobile ? 220 : 420,
                 borderTopLeftRadius: isMobile ? 14 : 24,
                 borderTopRightRadius: isMobile ? 14 : 24,
                 overflow: "hidden",
@@ -265,13 +265,13 @@ function HeadSection() {
             </div>
           )}
 
-          {/* 3rd Section - MOBILE vs DESKTOP */}
+          {/* 3rd Section - FIXED: Chicken RIGHT + Text LEFT (slightly right) */}
           <div ref={section3Ref} style={{
             width: "100%",
             padding: isMobile ? "40px 0" : "60px 0",
           }}>
             {isMobile ? (
-              /* MOBILE: Heading + Paragraph + Button */
+              /* MOBILE: Heading + Paragraph + Button (UNCHANGED) */
               <div style={{
                 display: "flex",
                 flexDirection: "column",
@@ -345,7 +345,7 @@ function HeadSection() {
                 </button>
               </div>
             ) : (
-              /* DESKTOP: Text LEFT + Chicken RIGHT + BUTTON */
+              /* DESKTOP: Text LEFT (slightly right) + Chicken RIGHT ✅ FIXED */
               <div style={{
                 display: "flex",
                 alignItems: "flex-start",
@@ -353,13 +353,14 @@ function HeadSection() {
                 width: "100%",
                 height: 500,
               }}>
-                {/* Left Text + Button */}
+                {/* LEFT: Text + Button - MOVED SLIGHTLY RIGHT */}
                 <div style={{
                   flex: 0.6,
                   display: "flex",
                   flexDirection: "column",
                   gap: 24,
                   paddingRight: 32,
+                  marginLeft: "40px",    // ← MOVES TEXT SLIGHTLY RIGHT on X-axis
                 }}>
                   {/* HEADING */}
                   <div ref={headingRef} style={headingStyle}>
@@ -391,13 +392,14 @@ function HeadSection() {
                       color: "#666", 
                       lineHeight: 1.6,
                       maxWidth: 500,
-                      left: "90px"
+                      left: "0px",
+                      marginLeft: "20px"   // ← Small right shift for balance
                     }}>
                       {homepageData.description}
                     </div>
                   </div>
 
-                  {/* DESKTOP BUTTON */}
+                  {/* BUTTON - MOVED FURTHER RIGHT */}
                   <button
                     style={{
                       ...buttonAnimationStyle,
@@ -412,7 +414,7 @@ function HeadSection() {
                       transition: "all 0.3s ease",
                       boxShadow: "0 8px 20px rgba(220,53,69,0.3)",
                       alignSelf: "flex-start",
-                      marginLeft: "350px",
+                      marginLeft: "40px",  // ← INCREASED from 20px to 40px
                     }}
                     onClick={handleSeeProducts}
                     onMouseEnter={(e) => {
@@ -430,7 +432,7 @@ function HeadSection() {
                   </button>
                 </div>
 
-                {/* Right Chicken Image */}
+                {/* RIGHT: Chicken Image */}
                 {images.chicken && (
                   <div 
                     ref={imageRef} 

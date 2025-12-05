@@ -12,7 +12,7 @@ const GALLERY_FILE_NAMES = [
   "galleryp-1-1.jpg",
   "galleryp-3-1.jpg",
   "iha_use_indo.png",
-  "gallery-2-1.png", // NEW IMAGE
+  "galleryp-2-1.jpg", // NEW IMAGE
 ];
 
 const GallerySection = () => {

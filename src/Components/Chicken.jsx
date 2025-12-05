@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { CONTAINER_PADDING, MOBILE_BREAKPOINT, CONTAINER_MAX_WIDTH } from "../constants";
+import {
+  CONTAINER_PADDING,
+  MOBILE_BREAKPOINT,
+  CONTAINER_MAX_WIDTH,
+} from "../constants";
 
 const API_BASE = "https://remarkable-approval-f316b5dd8f.strapiapp.com";
 
@@ -9,7 +13,7 @@ const ProductSection = () => {
   const [activeHeading, setActiveHeading] = useState("CHICKEN");
   const [activeBody, setActiveBody] = useState("");
   const [isMobile, setIsMobile] = useState(false);
-  const [animationPhase, setAnimationPhase] = useState('show');
+  const [animationPhase, setAnimationPhase] = useState("show");
   const [animKey, setAnimKey] = useState(0);
 
   useEffect(() => {
@@ -17,19 +21,12 @@ const ProductSection = () => {
       try {
         const res = await fetch(`${API_BASE}/api/chickens`);
         const data = await res.json();
-        console.log("Chicken API response:", data); // Debug log
-        
-        const mainData = data.data[0]; // First item
+
+        const mainData = data.data[0];
         if (mainData) {
-          // ✅ FIXED: New nested structure data.data[0].heading[0].heading
           const headings = mainData.heading[0]?.heading || [];
           const body = mainData.body[0]?.body || [];
-          
-          setChickenData({
-            headings: headings,
-            body: body
-          });
-          console.log("Parsed headings:", headings, "body:", body); // Debug log
+          setChickenData({ headings, body });
         }
       } catch (err) {
         console.error("Chicken data fetch failed:", err);
@@ -41,7 +38,6 @@ const ProductSection = () => {
         const res = await fetch(`${API_BASE}/api/upload/files`);
         const data = await res.json();
         setImages(data);
-        console.log("Images loaded:", data); // Debug log
       } catch (err) {
         console.error("Images fetch failed:", err);
       }
@@ -52,24 +48,23 @@ const ProductSection = () => {
   }, []);
 
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth <= MOBILE_BREAKPOINT);
+    const checkMobile = () =>
+      setIsMobile(window.innerWidth <= MOBILE_BREAKPOINT);
     checkMobile();
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
   const getImageUrl = (name) => {
-    const img = images.find(file => 
+    const img = images.find((file) =>
       file.name.toLowerCase().includes(name.toLowerCase())
     );
-    return img ? img.url : ""; // URLs are already absolute from Strapi Cloud
+    return img ? img.url : "";
   };
 
   const chickenImg = getImageUrl("chickenimage");
   const onionImg = getImageUrl("onionimage");
   const yellowBgImg = getImageUrl("yellow");
-
-  console.log("Chicken img:", chickenImg, "Onion img:", onionImg); // Debug log
 
   const containerStyle = {
     backgroundImage: `url(${yellowBgImg})`,
@@ -96,7 +91,7 @@ const ProductSection = () => {
   const headingStyle = (heading) => ({
     fontSize: isMobile ? "1.6rem" : "1.9rem",
     fontWeight: "bold",
-    color: activeHeading === heading ? "#dc3545" : "#000",
+    color: "#000",
     cursor: "pointer",
     padding: "16px 24px",
     borderRadius: 16,
@@ -122,8 +117,8 @@ const ProductSection = () => {
     flex: isMobile ? "1 1 55%" : "2",
     display: "flex",
     flexDirection: "row",
-    gap: isMobile ? "15px" : "60px",
-    alignItems: "flex-start",
+    alignItems: isMobile ? "flex-start" : "center",
+    gap: isMobile ? "15px" : "40px",
   };
 
   const imageContainer = {
@@ -131,37 +126,43 @@ const ProductSection = () => {
     height: isMobile ? "160px" : "400px",
     borderRadius: 24,
     overflow: "hidden",
-    boxShadow: "0 20px 40px rgba(0,0,0,0.3)",
+    boxShadow: "0 20px 40px rgba(0, 0, 0, 0.3)",
     flexShrink: 0,
     backgroundColor: "transparent",
   };
 
-  const getImageStyle = () => animationPhase === 'show'
-    ? { transform: "translateX(0) scale(1)", opacity: 1 }
-    : { transform: "translateX(-400%) scale(0.6)", opacity: 0 };
+  // Simplified slide-in animation from outer screen
+  const getImageStyle = () =>
+    animationPhase === "show"
+      ? { transform: "translateX(0)", opacity: 1 }
+      : { transform: "translateX(-100%)", opacity: 0 };
 
-  const getTextStyle = () => animationPhase === 'show'
-    ? { transform: "translateX(0) scale(1)", opacity: 1 }
-    : { transform: "translateX(400%) scale(0.6)", opacity: 0 };
+  const getTextStyle = () =>
+    animationPhase === "show"
+      ? { transform: "translateX(0)", opacity: 1 }
+      : { transform: "translateX(100%)", opacity: 0 };
 
   const imageStyle = {
     width: "100%",
     height: "100%",
     objectFit: "cover",
-    transition: "all 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55)",
+    transition: "all 0.8s ease-out",
     ...getImageStyle(),
   };
 
-  const flavourTextStyle = {
+  const flavourTextWrapperStyle = {
     fontSize: isMobile ? "1.6rem" : "3.5rem",
-    fontStyle: "italic",
-    fontWeight: "900",
-    color: "#dc3545",
+    fontWeight: 900,
+    color: "#000",
     lineHeight: 1.1,
-    transition: "all 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.3s",
+    transition: "all 0.8s ease-out 0.2s",
     flexShrink: 0,
-    whiteSpace: "nowrap",
     backgroundColor: "transparent",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-start",
+    justifyContent: "center",
+    minHeight: isMobile ? "160px" : "400px",
     ...getTextStyle(),
   };
 
@@ -189,11 +190,11 @@ const ProductSection = () => {
   });
 
   const triggerAnimation = () => {
-    setAnimationPhase('hide');
+    setAnimationPhase("hide");
     setTimeout(() => {
-      setAnimationPhase('show');
-      setAnimKey(prev => prev + 1);
-    }, 1500);
+      setAnimationPhase("show");
+      setAnimKey((prev) => prev + 1);
+    }, 800); // Match transition duration
   };
 
   const handleHeadingClick = (heading) => {
@@ -209,7 +210,6 @@ const ProductSection = () => {
     triggerAnimation();
   };
 
-  // ✅ Show loading if no data
   if (!chickenData.headings.length || !chickenData.body.length) {
     return (
       <div style={containerStyle}>
@@ -222,7 +222,7 @@ const ProductSection = () => {
 
   return (
     <div style={containerStyle}>
-      {/* Headings - RED UNDERLINE */}
+      {/* Headings */}
       <div style={headingsContainer}>
         {chickenData.headings.map((heading, idx) => (
           <div
@@ -237,7 +237,7 @@ const ProductSection = () => {
 
       {/* Main Content */}
       <div style={mainContent} key={animKey}>
-        {/* LEFT: Image + Text */}
+        {/* LEFT: Image + CHICKEN Flavour */}
         <div style={leftSection}>
           <div style={imageContainer}>
             <img
@@ -248,12 +248,23 @@ const ProductSection = () => {
               key={`${activeHeading}-img-${animKey}`}
             />
           </div>
-          <div style={flavourTextStyle} key={`flavour-${animKey}`}>
-            {activeHeading}<br/>Flavour
+
+          <div style={flavourTextWrapperStyle} key={`flavour-${animKey}`}>
+            <div style={{ marginBottom: isMobile ? "8px" : "12px", textAlign: "left" }}>
+              <span style={{ fontStyle: "normal" }}>{activeHeading}</span>
+            </div>
+            <div style={{ 
+              fontStyle: "italic", 
+              marginLeft: isMobile ? "20px" : "40px",
+              position: "relative",
+              transform: "translateX(10%)"
+            }}>
+              Flavour
+            </div>
           </div>
         </div>
 
-        {/* RIGHT: Body Text */}
+        {/* RIGHT: Body text options */}
         <div style={rightSection}>
           {chickenData.body.map((item, idx) => (
             <div
