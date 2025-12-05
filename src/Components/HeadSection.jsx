@@ -21,7 +21,7 @@ function HeadSection() {
   const paragraphRef = useRef(null);
   const imageRef = useRef(null);
 
-  // Intersection Observer - RESETS every time
+  // Intersection Observer
   const observerCallback = useCallback((entries) => {
     const [entry] = entries;
     if (entry.isIntersecting) {
@@ -83,13 +83,13 @@ function HeadSection() {
           });
         }
 
-        // Fetch homepage data - FIXED: id 2 = HEADING, id 6 = DESCRIPTION
+        // Fetch homepage data - CORRECT IDs
         const homepageRes = await fetch(`${API_BASE}/api/homepages`);
         const homepageJson = await homepageRes.json();
         
         if (mounted && homepageJson.data) {
-          const headingItem = homepageJson.data.find(item => item.id === 2);  // FIXED: ID 2 for heading
-          const descItem = homepageJson.data.find(item => item.id === 6);     // FIXED: ID 6 for description
+          const headingItem = homepageJson.data.find(item => item.id === 2);
+          const descItem = homepageJson.data.find(item => item.id === 6);
           
           setHomepageData({
             heading: headingItem?.description || "Discover the unique taste of\nIndomie Instant Noodles",
@@ -123,7 +123,7 @@ function HeadSection() {
     overflowX: "hidden",
   };
 
-  // Animation styles - HEADING FIRST
+  // Animation styles
   const headingStyle = {
     transform: section3Visible ? "translateX(0)" : "translateX(-100px)",
     opacity: section3Visible ? 1 : 0,
@@ -265,20 +265,18 @@ function HeadSection() {
             </div>
           )}
 
-          {/* 3rd Section - FIXED HEIGHT + SMALLER FONTS */}
+          {/* 3rd Section - FULL DESCRIPTION VISIBLE */}
           <div ref={section3Ref} style={{
             width: "100%",
             padding: isMobile ? "40px 0" : "60px 0",
-            maxHeight: isMobile ? "450px" : "500px",  // NO OVERFLOW
-            overflow: "hidden",
           }}>
             {isMobile ? (
-              /* MOBILE: Heading + Paragraph + Button */
+              /* MOBILE: Full description visible */
               <div style={{
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                gap: 24,
+                gap: 20,
                 textAlign: "center",
                 maxWidth: 400,
                 margin: "0 auto",
@@ -305,14 +303,13 @@ function HeadSection() {
                   </div>
                 </div>
 
-                {/* PARAGRAPH - SMALLER FONT */}
+                {/* FULL DESCRIPTION - NO TRUNCATION */}
                 <div ref={paragraphRef} style={paragraphStyle}>
                   <div style={{ 
-                    fontSize: "0.9rem",   // REDUCED
+                    fontSize: "0.95rem", 
                     color: "#666", 
-                    lineHeight: 1.5,
-                    maxHeight: "100px",
-                    overflow: "hidden",
+                    lineHeight: 1.6,
+                    textAlign: "center",
                   }}>
                     {homepageData.description}
                   </div>
@@ -349,13 +346,13 @@ function HeadSection() {
                 </button>
               </div>
             ) : (
-              /* DESKTOP: Text LEFT + Chicken RIGHT */
+              /* DESKTOP: Full description visible */
               <div style={{
                 display: "flex",
                 alignItems: "flex-start",
                 gap: 48,
                 width: "100%",
-                height: 500,
+                minHeight: "550px",  // Increased height for full text
               }}>
                 {/* LEFT: Text + Button */}
                 <div style={{
@@ -388,18 +385,15 @@ function HeadSection() {
                     </div>
                   </div>
 
-                  {/* PARAGRAPH - SMALLER FONT + TRUNCATION */}
+                  {/* FULL DESCRIPTION - NO TRUNCATION OR ELLIPSIS */}
                   <div ref={paragraphRef} style={paragraphStyle}>
                     <div style={{ 
-                      fontSize: "0.95rem",  // REDUCED from 1.1rem
+                      fontSize: "1rem", 
                       color: "#666", 
-                      lineHeight: 1.5,      // Tighter
-                      maxWidth: 420,
+                      lineHeight: 1.7,
+                      maxWidth: 480,
                       marginLeft: "20px",
-                      display: "-webkit-box",
-                      WebkitLineClamp: 4,   // Max 4 lines
-                      WebkitBoxOrient: "vertical",
-                      overflow: "hidden",
+                      // NO truncation styles - full text visible
                     }}>
                       {homepageData.description}
                     </div>
