@@ -1,4 +1,4 @@
-// Footer.jsx
+// Footer.jsx - Mobile centered Contact & Follow Us
 import React, { useEffect, useState } from "react";
 
 const API_BASE = "https://remarkable-approval-f316b5dd8f.strapiapp.com";
@@ -22,9 +22,7 @@ const Footer = () => {
   const getName = (fallback) => {
     const item =
       categories.find((c) => c.name.toLowerCase().includes("news")) ||
-      categories.find((c) =>
-        c.name.toLowerCase().includes(fallback.toLowerCase())
-      );
+      categories.find((c) => c.name.toLowerCase().includes(fallback.toLowerCase()));
     return item?.name || fallback;
   };
 
@@ -41,65 +39,67 @@ const Footer = () => {
       <div style={styles.inner}>
         {/* Left: Newsletter */}
         <div style={styles.column}>
-          <h2 style={styles.heading}>{newsletterTitle}</h2>
-          <p style={styles.text}>
-            Signup for our newsletter and get informed about the latest news.
-          </p>
+          <div style={styles.newsletterContent}>
+            <h2 style={styles.heading}>{newsletterTitle}</h2>
+            <p style={{ ...styles.text, color: "#d57a3c" }}>
+              Signup for our newsletter and get informed about the latest news.
+            </p>
 
-          <div style={styles.inputRow}>
-            <input
-              type="email"
-              placeholder="Your email address"
-              style={styles.input}
-            />
-          </div>
+            <div style={styles.inputRow}>
+              <input type="email" placeholder="Your email address" style={styles.input} />
+            </div>
 
-          <label style={styles.checkboxRow}>
-            <input type="checkbox" style={styles.checkbox} />
-            <span style={styles.text}>
-              I have read and agree to the terms &amp; conditions
-            </span>
-          </label>
+            <label style={styles.checkboxRow}>
+              <input type="checkbox" style={styles.checkbox} />
+              <span style={styles.text}>I have read and agree to the terms &amp; conditions</span>
+            </label>
 
-          <button type="button" style={styles.signUpBtn}>
-            Sign up
-          </button>
-        </div>
-
-        {/* Middle: Contact */}
-        <div style={styles.column}>
-          <h2 style={styles.heading}>{contactTitle}</h2>
-          <p style={styles.subText}>We want to hear from you</p>
-
-          <p style={styles.text}>
-            Dufil Prima Food Ltd.
-            <br />
-            44 Jimoh Odutola Street
-            <br />
-            Off Eric Moore Road,
-            <br />
-            Surulere, Lagos, Nigeria
-          </p>
-
-          <div style={styles.iconTextRow}>
-            <span style={styles.icon}>✉️</span>
-            <span style={styles.text}>info@indomie.ng</span>
-          </div>
-
-          <div style={styles.iconTextRow}>
-            <span style={styles.icon}>📞</span>
-            <span style={styles.text}>08004636643; 07004636643</span>
+            <button type="button" style={styles.signUpBtn}>
+              Sign up
+            </button>
           </div>
         </div>
 
-        {/* Right: Follow Us */}
+        {/* Middle: Contact - MOBILE CENTERED */}
         <div style={styles.column}>
-          <h2 style={styles.heading}>{followTitle}</h2>
-          <div style={styles.socialRow}>
-            <button style={styles.socialIconBtn}>f</button>
-            <button style={styles.socialIconBtn}>t</button>
-            <button style={styles.socialIconBtn}>⧖</button>
-            <button style={styles.socialIconBtn}>▶</button>
+          <div style={styles.contactContent}>
+            <h2 style={styles.heading}>{contactTitle}</h2>
+            <p style={{ ...styles.subText, color: "#d57a3c" }}>We want to hear from you</p>
+
+            <p style={styles.text}>
+              Dufil Prima Food Ltd.
+              <br />
+              44 Jimoh Odutola Street
+              <br />
+              Off Eric Moore Road,
+              <br />
+              Surulere, Lagos, Nigeria
+            </p>
+
+            <div style={styles.iconTextRow}>
+              <span style={styles.icon}>✉️</span>
+              <span style={styles.text}>info@indomie.ng</span>
+            </div>
+
+            <div style={styles.iconTextRow}>
+              <span style={styles.icon}>📞</span>
+              <span style={styles.text}>08004636643; 07004636643</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Right: Follow Us - MOBILE CENTERED */}
+        <div style={styles.column}>
+          <div style={styles.followContent}>
+            <h2 style={styles.heading}>{followTitle}</h2>
+            <div style={styles.socialContainer}>
+              <div style={styles.socialRow}>
+                <button style={styles.socialIconBtn}>f</button>
+                <button style={styles.socialIconBtn}>t</button>
+                <button style={styles.socialIconBtn}>⧖</button>
+                <button style={styles.socialIconBtn}>▶</button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -147,23 +147,47 @@ const styles = {
   column: {
     flex: "1 1 280px",
     minWidth: "260px",
+    display: "flex",
+    flexDirection: "column",
+  },
+  // NEW: Content containers for centering
+  newsletterContent: {
+    display: "flex",
+    flexDirection: "column",
+  },
+  contactContent: {
+    display: "flex",
+    flexDirection: "column",
+    textAlign: "left", // Desktop: left-aligned
+    '@media (max-width: 768px)': {
+      alignItems: "center",
+      textAlign: "center",
+    },
+  },
+  followContent: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-start", // Desktop: left-aligned
+    '@media (max-width: 768px)': {
+      alignItems: "center",
+    },
   },
   heading: {
     color: "#d57a3c",
     fontSize: "2.4rem",
     fontWeight: "700",
-    margin: "0 0 16px",
+    margin: "0 0 16px 0",
   },
   text: {
     color: "#ffffff",
-    fontSize: "0.95rem",
+    fontSize: "0.7rem",
     lineHeight: 1.6,
-    margin: "0 0 12px",
+    margin: "0 0 12px 0",
   },
   subText: {
     color: "#ffffff",
-    fontSize: "1rem",
-    margin: "0 0 14px",
+    fontSize: "0.6rem",
+    margin: "0 0 14px 0",
   },
   inputRow: {
     marginTop: "20px",
@@ -200,24 +224,43 @@ const styles = {
     alignItems: "center",
     gap: "10px",
     marginTop: "8px",
+    '@media (max-width: 768px)': {
+      justifyContent: "center",
+    },
   },
   icon: {
     fontSize: "1.2rem",
+    minWidth: "24px",
+  },
+  socialContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    flex: 1,
   },
   socialRow: {
     display: "flex",
-    gap: "12px",
-    marginTop: "12px",
+    gap: "7px",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    '@media (max-width: 768px)': {
+      flexDirection: "column",
+      alignItems: "center",
+      gap: "10px",
+    },
   },
   socialIconBtn: {
-    width: "40px",
-    height: "40px",
+    width: "30px",
+    height: "30px",
     borderRadius: "50%",
     backgroundColor: "#d57a3c",
     border: "none",
     color: "#fff",
     fontSize: "1.2rem",
     cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
   bottomBar: {
     borderTop: "1px solid #333",
@@ -233,9 +276,9 @@ const styles = {
     marginBottom: "12px",
   },
   bottomLink: {
-    color: "#ffffff",
+    color: "#d57a3c",
     textDecoration: "none",
-    fontSize: "0.9rem",
+    fontSize: "0.5rem",
   },
   copy: {
     color: "#777",

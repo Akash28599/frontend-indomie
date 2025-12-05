@@ -17,16 +17,18 @@ const Navbar = ({ fixed }) => {
       try {
         const res = await fetch(`${API_BASE}/api/upload/files`);
         const data = await res.json();
-        
+
         const logoCandidates = [
-          data.find(file => file.name === "logo.png"),
-          data.find(file => file.name === "indomie.jpg"),
-          data.find(file => file.name.toLowerCase().includes("logo")),
-          data.find(file => file.name.toLowerCase().includes("indomie"))
+          data.find((file) => file.name === "logo.png"),
+          data.find((file) => file.name === "indomie.jpg"),
+          data.find((file) => file.name.toLowerCase().includes("logo")),
+          data.find((file) => file.name.toLowerCase().includes("indomie")),
         ].filter(Boolean)[0];
-        
+
         if (logoCandidates) {
-          const logoUrlPath = logoCandidates.url.startsWith('http') ? logoCandidates.url : `${API_BASE}${logoCandidates.url}`;
+          const logoUrlPath = logoCandidates.url.startsWith("http")
+            ? logoCandidates.url
+            : `${API_BASE}${logoCandidates.url}`;
           setLogoUrl(logoUrlPath);
         } else {
           setLogoUrl("");
@@ -44,9 +46,7 @@ const Navbar = ({ fixed }) => {
       try {
         const res = await fetch(`${API_BASE}/api/navbars`);
         const data = await res.json();
-        // ✅ FIXED: Use 'label' instead of 'name' to match API response
         setMenuItems(data.data[0]?.menu || []);
-        console.log("Menu items loaded:", data.data[0]?.menu); // Debug log
       } catch (err) {
         console.error("Menu fetch failed:", err);
         setMenuItems([]);
@@ -104,12 +104,14 @@ const Navbar = ({ fixed }) => {
     transition: "all 0.3s ease",
   };
 
+  // ⬅️ LOGO SHIFT LEFT ON MOBILE
   const logoContainerStyle = {
     flex: "0 0 auto",
     display: "flex",
     alignItems: "center",
     cursor: "pointer",
     padding: "1px 0",
+    ...(isMobile && { marginLeft: "-12px",marginTop: "6px", }),
   };
 
   const logoStyle = {
@@ -159,10 +161,7 @@ const Navbar = ({ fixed }) => {
               src={logoUrl}
               alt="Indomie Logo"
               style={logoStyle}
-              onLoad={() => console.log("✅ Logo LOADED from Strapi:", logoUrl)}
-              onError={(e) => {
-                e.target.style.display = "none";
-              }}
+              onError={(e) => (e.target.style.display = "none")}
             />
           ) : (
             <div
@@ -194,56 +193,65 @@ const Navbar = ({ fixed }) => {
                     href={item.url}
                     style={{
                       ...menuLinkBaseStyle,
-                      ...(hoveredIndex === index 
-                        ? { color: "orange", backgroundColor: "transparent" } 
-                        : {}
-                      ),
+                      ...(hoveredIndex === index
+                        ? { color: "orange" }
+                        : {}),
                     }}
                     onMouseEnter={() => setHoveredIndex(index)}
                     onMouseLeave={() => setHoveredIndex(null)}
                   >
-                    {/* ✅ FIXED: Use item.label instead of item.name */}
                     {item.label}
                   </a>
                 </li>
               ))}
             </ul>
           ) : (
-            <button 
-              onClick={() => setMenuOpen(!menuOpen)} 
+            // ➡️ HAMBURGER SHIFT RIGHT ON MOBILE
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
               style={{
-                background: "none", 
-                border: "none", 
+                background: "none",
+                border: "none",
                 cursor: "pointer",
-                width: 32, 
-                height: 24, 
-                display: "flex", 
+                width: 32,
+                height: 24,
+                display: "flex",
                 flexDirection: "column",
-                justifyContent: "space-between", 
+                justifyContent: "space-between",
                 padding: 0,
+                ...(isMobile && { marginRight: "-12px",marginTop: "6px"}),
               }}
             >
-              <span style={{ 
-                height: 3, 
-                backgroundColor: "#000", 
-                borderRadius: 2, 
-                transition: "all 0.3s ease", 
-                transform: menuOpen ? "rotate(45deg) translate(5px, 6px)" : "none" 
-              }} />
-              <span style={{ 
-                height: 3, 
-                backgroundColor: "#000", 
-                borderRadius: 2, 
-                opacity: menuOpen ? 0 : 1, 
-                transition: "all 0.3s ease" 
-              }} />
-              <span style={{ 
-                height: 3, 
-                backgroundColor: "#000", 
-                borderRadius: 2, 
-                transition: "all 0.3s ease", 
-                transform: menuOpen ? "rotate(-45deg) translate(7px, -6px)" : "none" 
-              }} />
+              <span
+                style={{
+                  height: 3,
+                  backgroundColor: "#000",
+                  borderRadius: 2,
+                  transition: "all 0.3s ease",
+                  transform: menuOpen
+                    ? "rotate(45deg) translate(5px, 6px)"
+                    : "none",
+                }}
+              />
+              <span
+                style={{
+                  height: 3,
+                  backgroundColor: "#000",
+                  borderRadius: 2,
+                  opacity: menuOpen ? 0 : 1,
+                }}
+              />
+              <span
+                style={{
+                  height: 3,
+                  backgroundColor: "#000",
+                  borderRadius: 2,
+                  transition: "all 0.3s ease",
+                  transform: menuOpen
+                    ? "rotate(-45deg) translate(7px, -6px)"
+                    : "none",
+                }}
+              />
             </button>
           )}
         </div>
@@ -251,30 +259,38 @@ const Navbar = ({ fixed }) => {
 
       {/* MOBILE MENU OVERLAY */}
       {menuOpen && isMobile && (
-        <div style={{
-          position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
-          backgroundColor: "#28a745", display: "flex", flexDirection: "column",
-          justifyContent: "center", alignItems: "center", gap: 32, zIndex: 2000,
-        }} onClick={() => setMenuOpen(false)}>
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "#28a745",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: 32,
+            zIndex: 2000,
+          }}
+          onClick={() => setMenuOpen(false)}
+        >
           {menuItems.map((item) => (
-            <a 
-              key={item.url} 
-              href={item.url} 
+            <a
+              key={item.url}
+              href={item.url}
               style={{
-                color: "white", 
-                fontWeight: "bold", 
+                color: "white",
+                fontWeight: "bold",
                 fontSize: "1.5rem",
-                textDecoration: "none", 
-                padding: "16px 32px", 
-                borderRadius: 8, 
-                whiteSpace: "nowrap",
-              }} 
-              onClick={(e) => { 
-                e.stopPropagation(); 
-                setMenuOpen(false); 
+                textDecoration: "none",
+              }}
+              onClick={(e) => {
+                e.stopPropagation();
+                setMenuOpen(false);
               }}
             >
-              {/* ✅ FIXED: Use item.label in mobile menu too */}
               {item.label}
             </a>
           ))}

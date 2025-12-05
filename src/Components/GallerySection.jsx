@@ -3,15 +3,16 @@ import React, { useState, useEffect, useRef } from "react";
 import { CONTAINER_PADDING, MOBILE_BREAKPOINT, CONTAINER_MAX_WIDTH } from "../constants";
 
 const API_BASE = "https://remarkable-approval-f316b5dd8f.strapiapp.com";
-
 const BG_IMAGE_URL = "https://remarkable-approval-f316b5dd8f.media.strapiapp.com/bgbody_12bc792032.jpg";
 
+// FIXED ORDER (2 on top, 4 on bottom)
 const GALLERY_FILE_NAMES = [
-  "addlabel1-2.png",   // top-left (big)
-  "addlabel2-1.png",   // top-right (big)
-  "galleryp-1-1.jpg",  // bottom-left
-  "galleryp-3-1.jpg",  // bottom-center
-  "iha_use_indo.png",  // bottom-right
+  "addlabel1-2.png",
+  "addlabel2-1.png",
+  "galleryp-1-1.jpg",
+  "galleryp-3-1.jpg",
+  "iha_use_indo.png",
+  "gallery-2-1.png", // NEW IMAGE
 ];
 
 const GallerySection = () => {
@@ -28,6 +29,7 @@ const GallerySection = () => {
         const res = await fetch(`${API_BASE}/api/upload/files`);
         const data = await res.json();
 
+        // STRICT ORDER: 2 top, 4 bottom
         const ordered = GALLERY_FILE_NAMES
           .map((name) => data.find((f) => f.name === name))
           .filter(Boolean);
@@ -57,10 +59,7 @@ const GallerySection = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const handleCardClick = () => {
-    window.location.reload();
-  };
-
+  const handleCardClick = () => window.location.reload();
   const handleFanClick = (e) => {
     e.stopPropagation();
     window.location.href = "/fanclub";
@@ -81,37 +80,12 @@ const GallerySection = () => {
     position: "relative",
   };
 
-  // REMOVED DARK OVERLAY - now shows true white/light background
-  const contentWrapperStyle = {
-    position: "relative",
-    zIndex: 2,
-  };
-
-  const gridWrapperStyle = {
-    display: "flex",
-    flexDirection: "column",
-    gap: isMobile ? 16 : 24,
-  };
-
-  const rowTopStyle = {
-    display: "flex",
-    flexDirection: isMobile ? "column" : "row",
-    gap: isMobile ? 16 : 24,
-  };
-
-  const rowBottomStyle = {
-    display: "flex",
-    flexDirection: isMobile ? "column" : "row",
-    gap: isMobile ? 16 : 24,
-  };
-
   const baseCardStyle = {
     position: "relative",
     borderRadius: 20,
     overflow: "hidden",
     backgroundColor: "#ffffff",
     cursor: "pointer",
-    transform: isInView ? "scale(1)" : "scale(0.9)",
     transition: "transform 0.4s ease, box-shadow 0.4s ease",
   };
 
@@ -119,26 +93,14 @@ const GallerySection = () => {
     ...baseCardStyle,
     flex: isMobile ? "1 1 100%" : "1 1 50%",
     height: isMobile ? 220 : 280,
-    boxShadow: "0 18px 40px rgba(0,0,0,0.18)",
-    ...(hoverIndex === index
-      ? {
-          transform: "scale(1.04)",
-          boxShadow: "0 24px 60px rgba(0,0,0,0.25)",
-        }
-      : {}),
+    transform: hoverIndex === index ? "scale(1.04)" : "scale(1)",
   });
 
   const bottomCardStyle = (index) => ({
     ...baseCardStyle,
-    flex: isMobile ? "1 1 100%" : "1 1 33.33%",
+    flex: isMobile ? "1 1 100%" : "1 1 25%", // EXACTLY 4 per row
     height: isMobile ? 200 : 220,
-    boxShadow: "0 14px 30px rgba(0,0,0,0.16)",
-    ...(hoverIndex === index
-      ? {
-          transform: "scale(1.04)",
-          boxShadow: "0 22px 50px rgba(0,0,0,0.22)",
-        }
-      : {}),
+    transform: hoverIndex === index ? "scale(1.04)" : "scale(1)",
   });
 
   const imgStyle = {
@@ -158,11 +120,10 @@ const GallerySection = () => {
     fontWeight: "bold",
     fontSize: isMobile ? "0.9rem" : "1rem",
     border: "none",
-    outline: "none",
     textTransform: "uppercase",
     letterSpacing: "0.05em",
-    backgroundColor: btnHoverIndex === index ? "#ffd400" : "#000000",
-    color: btnHoverIndex === index ? "#e60012" : "#ffffff",
+    backgroundColor: btnHoverIndex === index ? "#ffd400" : "#000",
+    color: btnHoverIndex === index ? "#e60012" : "#fff",
     transition: "all 0.25s ease",
     cursor: "pointer",
   });
@@ -171,84 +132,64 @@ const GallerySection = () => {
     return <section ref={sectionRef} style={containerStyle} />;
   }
 
-  const [img1, img2, img3, img4, img5] = images;
+  const [img1, img2, img3, img4, img5, img6] = images;
 
   return (
     <section ref={sectionRef} style={containerStyle}>
-      {/* NO OVERLAY - pure background image now visible */}
-      <div style={contentWrapperStyle}>
-        <div style={gridWrapperStyle}>
-          {/* TOP ROW: 2 big cards with buttons */}
-          <div style={rowTopStyle}>
-            {[img1, img2].map((img, idx) => {
-              if (!img) return null;
-              const globalIndex = idx;
-              return (
-                <div
-                  key={img.id}
-                  style={topCardStyle(globalIndex)}
-                  onMouseEnter={() => setHoverIndex(globalIndex)}
-                  onMouseLeave={() => setHoverIndex(null)}
-                  onClick={handleCardClick}
-                >
-                  <img
-                    src={img.url}
-                    alt={img.alternativeText || img.name}
-                    style={{
-                      ...imgStyle,
-                      transform:
-                        hoverIndex === globalIndex ? "scale(1.08)" : "scale(1)",
-                    }}
-                    loading="lazy"
-                  />
-                  <button
-                    type="button"
-                    style={fanButtonStyle(globalIndex)}
-                    onMouseEnter={(e) => {
-                      e.stopPropagation();
-                      setBtnHoverIndex(globalIndex);
-                    }}
-                    onMouseLeave={(e) => {
-                      e.stopPropagation();
-                      setBtnHoverIndex(null);
-                    }}
-                    onClick={handleFanClick}
-                  >
-                    Become a Fan
-                  </button>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* BOTTOM ROW: 3 smaller cards */}
-          <div style={rowBottomStyle}>
-            {[img3, img4, img5].map((img, idx) => {
-              if (!img) return null;
-              const globalIndex = idx + 2;
-              return (
-                <div
-                  key={img.id}
-                  style={bottomCardStyle(globalIndex)}
-                  onMouseEnter={() => setHoverIndex(globalIndex)}
-                  onMouseLeave={() => setHoverIndex(null)}
-                  onClick={handleCardClick}
-                >
-                  <img
-                    src={img.url}
-                    alt={img.alternativeText || img.name}
-                    style={{
-                      ...imgStyle,
-                      transform:
-                        hoverIndex === globalIndex ? "scale(1.08)" : "scale(1)",
-                    }}
-                    loading="lazy"
-                  />
-                </div>
-              );
-            })}
-          </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+        
+        {/* ROW 1 - EXACTLY 2 IMAGES */}
+        <div style={{ display: "flex", flexDirection: isMobile ? "column" : "row", gap: 24 }}>
+          {[img1, img2].map((img, idx) => (
+            <div
+              key={img?.id}
+              style={topCardStyle(idx)}
+              onMouseEnter={() => setHoverIndex(idx)}
+              onMouseLeave={() => setHoverIndex(null)}
+              onClick={handleCardClick}
+            >
+              <img
+                src={img.url}
+                style={imgStyle}
+                alt={img.name}
+              />
+              <button
+                type="button"
+                style={fanButtonStyle(idx)}
+                onMouseEnter={() => setBtnHoverIndex(idx)}
+                onMouseLeave={() => setBtnHoverIndex(null)}
+                onClick={handleFanClick}
+              >
+                Become a Fan
+              </button>
+            </div>
+          ))}
         </div>
+
+        {/* ROW 2 - EXACTLY 4 IMAGES */}
+        <div style={{ display: "flex", flexDirection: isMobile ? "column" : "row", gap: 24 }}>
+          {[img3, img4, img5, img6].map((img, idx) => {
+            if (!img) return null;
+            const globalIndex = idx + 2;
+
+            return (
+              <div
+                key={img.id}
+                style={bottomCardStyle(globalIndex)}
+                onMouseEnter={() => setHoverIndex(globalIndex)}
+                onMouseLeave={() => setHoverIndex(null)}
+                onClick={handleCardClick}
+              >
+                <img
+                  src={img.url}
+                  style={imgStyle}
+                  alt={img.name}
+                />
+              </div>
+            );
+          })}
+        </div>
+
       </div>
     </section>
   );
