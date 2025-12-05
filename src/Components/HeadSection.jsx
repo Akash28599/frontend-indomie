@@ -83,13 +83,13 @@ function HeadSection() {
           });
         }
 
-        // Fetch homepage data - FIXED: id 6 = HEADING, id 4 = DESCRIPTION
+        // Fetch homepage data - FIXED: id 2 = HEADING, id 6 = DESCRIPTION
         const homepageRes = await fetch(`${API_BASE}/api/homepages`);
         const homepageJson = await homepageRes.json();
         
         if (mounted && homepageJson.data) {
-          const headingItem = homepageJson.data.find(item => item.id === 6);
-          const descItem = homepageJson.data.find(item => item.id === 4);
+          const headingItem = homepageJson.data.find(item => item.id === 2);  // FIXED: ID 2 for heading
+          const descItem = homepageJson.data.find(item => item.id === 6);     // FIXED: ID 6 for description
           
           setHomepageData({
             heading: headingItem?.description || "Discover the unique taste of\nIndomie Instant Noodles",
@@ -265,13 +265,15 @@ function HeadSection() {
             </div>
           )}
 
-          {/* 3rd Section - FIXED: Chicken RIGHT + Text LEFT */}
+          {/* 3rd Section - FIXED HEIGHT + SMALLER FONTS */}
           <div ref={section3Ref} style={{
             width: "100%",
             padding: isMobile ? "40px 0" : "60px 0",
+            maxHeight: isMobile ? "450px" : "500px",  // NO OVERFLOW
+            overflow: "hidden",
           }}>
             {isMobile ? (
-              /* MOBILE: Heading + Paragraph + Button (UNCHANGED) */
+              /* MOBILE: Heading + Paragraph + Button */
               <div style={{
                 display: "flex",
                 flexDirection: "column",
@@ -303,12 +305,14 @@ function HeadSection() {
                   </div>
                 </div>
 
-                {/* PARAGRAPH */}
+                {/* PARAGRAPH - SMALLER FONT */}
                 <div ref={paragraphRef} style={paragraphStyle}>
                   <div style={{ 
-                    fontSize: "1rem", 
+                    fontSize: "0.9rem",   // REDUCED
                     color: "#666", 
-                    lineHeight: 1.6 
+                    lineHeight: 1.5,
+                    maxHeight: "100px",
+                    overflow: "hidden",
                   }}>
                     {homepageData.description}
                   </div>
@@ -345,7 +349,7 @@ function HeadSection() {
                 </button>
               </div>
             ) : (
-              /* DESKTOP: Text LEFT + Chicken RIGHT (PERFECT SIZE) */
+              /* DESKTOP: Text LEFT + Chicken RIGHT */
               <div style={{
                 display: "flex",
                 alignItems: "flex-start",
@@ -384,20 +388,24 @@ function HeadSection() {
                     </div>
                   </div>
 
-                  {/* PARAGRAPH */}
+                  {/* PARAGRAPH - SMALLER FONT + TRUNCATION */}
                   <div ref={paragraphRef} style={paragraphStyle}>
                     <div style={{ 
-                      fontSize: "1.1rem", 
+                      fontSize: "0.95rem",  // REDUCED from 1.1rem
                       color: "#666", 
-                      lineHeight: 1.6,
-                      maxWidth: 500,
-                      marginLeft: "20px"
+                      lineHeight: 1.5,      // Tighter
+                      maxWidth: 420,
+                      marginLeft: "20px",
+                      display: "-webkit-box",
+                      WebkitLineClamp: 4,   // Max 4 lines
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
                     }}>
                       {homepageData.description}
                     </div>
                   </div>
 
-                  {/* BUTTON - MOVED FURTHER RIGHT */}
+                  {/* BUTTON */}
                   <button
                     style={{
                       ...buttonAnimationStyle,
@@ -412,7 +420,7 @@ function HeadSection() {
                       transition: "all 0.3s ease",
                       boxShadow: "0 8px 20px rgba(220,53,69,0.3)",
                       alignSelf: "flex-start",
-                      marginLeft: "80px", // SLIGHTLY FURTHER RIGHT
+                      marginLeft: "80px",
                     }}
                     onClick={handleSeeProducts}
                     onMouseEnter={(e) => {
@@ -430,20 +438,20 @@ function HeadSection() {
                   </button>
                 </div>
 
-                {/* RIGHT: Chicken Image - PERFECT SIZE, DIRECT ON BACKGROUND */}
+                {/* RIGHT: Chicken Image */}
                 {images.chicken && (
                   <div 
                     ref={imageRef} 
                     style={{
                       ...imageAnimationStyle,
                       flex: 0.45,
-                      width: "450px", // JUST RIGHT SIZE
+                      width: "450px",
                       height: "100%",
                       margin: 0,
                       padding: 0,
                       borderRadius: 24,
                       overflow: "hidden",               
-                      background: "transparent", // NO BACKGROUND - DIRECT ON PAGE BG
+                      background: "transparent",
                     }}
                   >
                     <img
