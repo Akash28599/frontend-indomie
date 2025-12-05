@@ -265,7 +265,7 @@ function HeadSection() {
             </div>
           )}
 
-          {/* 3rd Section - FIXED: Chicken RIGHT + Text LEFT (slightly right) */}
+          {/* 3rd Section - FIXED: Chicken RIGHT + Text LEFT */}
           <div ref={section3Ref} style={{
             width: "100%",
             padding: isMobile ? "40px 0" : "60px 0",
@@ -327,7 +327,7 @@ function HeadSection() {
                     border: "none",
                     cursor: "pointer",
                     transition: "all 0.3s ease",
-                    boxShadow: "0 8px 20px rgba(220,53,69,0.3)",
+                    boxShadow: "0 8px 20px rgba(220,53,69,0.3)"
                   }}
                   onClick={handleSeeProducts}
                   onMouseEnter={(e) => {
@@ -345,7 +345,7 @@ function HeadSection() {
                 </button>
               </div>
             ) : (
-              /* DESKTOP: Text LEFT (slightly right) + Chicken RIGHT ✅ FIXED */
+              /* DESKTOP: Text LEFT + Chicken RIGHT (PERFECT SIZE) */
               <div style={{
                 display: "flex",
                 alignItems: "flex-start",
@@ -353,14 +353,14 @@ function HeadSection() {
                 width: "100%",
                 height: 500,
               }}>
-                {/* LEFT: Text + Button - MOVED SLIGHTLY RIGHT */}
+                {/* LEFT: Text + Button */}
                 <div style={{
-                  flex: 0.6,
+                  flex: 0.55,
                   display: "flex",
                   flexDirection: "column",
                   gap: 24,
                   paddingRight: 32,
-                  marginLeft: "40px",    // ← MOVES TEXT SLIGHTLY RIGHT on X-axis
+                  marginLeft: "60px",
                 }}>
                   {/* HEADING */}
                   <div ref={headingRef} style={headingStyle}>
@@ -387,13 +387,11 @@ function HeadSection() {
                   {/* PARAGRAPH */}
                   <div ref={paragraphRef} style={paragraphStyle}>
                     <div style={{ 
-                      position: "relative",
                       fontSize: "1.1rem", 
                       color: "#666", 
                       lineHeight: 1.6,
                       maxWidth: 500,
-                      left: "0px",
-                      marginLeft: "20px"   // ← Small right shift for balance
+                      marginLeft: "20px"
                     }}>
                       {homepageData.description}
                     </div>
@@ -414,7 +412,7 @@ function HeadSection() {
                       transition: "all 0.3s ease",
                       boxShadow: "0 8px 20px rgba(220,53,69,0.3)",
                       alignSelf: "flex-start",
-                      marginLeft: "40px",  // ← INCREASED from 20px to 40px
+                      marginLeft: "80px", // SLIGHTLY FURTHER RIGHT
                     }}
                     onClick={handleSeeProducts}
                     onMouseEnter={(e) => {
@@ -432,19 +430,20 @@ function HeadSection() {
                   </button>
                 </div>
 
-                {/* RIGHT: Chicken Image */}
+                {/* RIGHT: Chicken Image - PERFECT SIZE, DIRECT ON BACKGROUND */}
                 {images.chicken && (
                   <div 
                     ref={imageRef} 
                     style={{
                       ...imageAnimationStyle,
-                      flex: 0.4,
-                      width: "300px",
+                      flex: 0.45,
+                      width: "450px", // JUST RIGHT SIZE
                       height: "100%",
                       margin: 0,
                       padding: 0,
-                      borderRadius: 0,
-                      overflow: "hidden",
+                      borderRadius: 24,
+                      overflow: "hidden",               
+                      background: "transparent", // NO BACKGROUND - DIRECT ON PAGE BG
                     }}
                   >
                     <img

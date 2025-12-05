@@ -1,4 +1,4 @@
-// RecipesHeroInlineAnimated.jsx
+// RecipesHeroInlineAnimated.jsx - FIXED: Kookpic reappears after modal
 import React, { useEffect, useState, useRef } from "react";
 
 const API_BASE = "https://remarkable-approval-f316b5dd8f.strapiapp.com";
@@ -7,6 +7,7 @@ const RecipesHeroInlineAnimated = () => {
   const [files, setFiles] = useState([]);
   const [isInView, setIsInView] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [showComingSoon, setShowComingSoon] = useState(false);
   const sectionRef = useRef(null);
 
   useEffect(() => {
@@ -82,8 +83,8 @@ const RecipesHeroInlineAnimated = () => {
     display: isMobile ? "none" : "flex",
     justifyContent: "center",
     alignItems: "center",
-    overflow: "visible",        // allow image to go outside white div
-    position: "relative",       // parent for the image offset
+    overflow: "visible",
+    position: "relative",
   };
 
   const titleStyle = {
@@ -136,7 +137,7 @@ const RecipesHeroInlineAnimated = () => {
   };
 
   const mainImgStyle = {
-    width: "340px",              // bigger cook image
+    width: "340px",
     height: "340px",
     maxWidth: "none",
     display: "block",
@@ -144,7 +145,45 @@ const RecipesHeroInlineAnimated = () => {
     opacity: isInView ? 1 : 0,
     transform: isInView ? "translate(40px, 0px)" : "translate(40px, 40px)",
     position: "relative",
-    zIndex: 10,                  // above red background
+    zIndex: 10,
+  };
+
+  // COMING SOON MODAL - RENDERED OVERLAY (NOT REPLACING)
+  const comingSoonStyle = {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    width: "100vw",
+    height: "100vh",
+    backgroundColor: "rgba(0, 0, 0, 0.8)",
+    display: showComingSoon ? "flex" : "none", // Conditional display
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 1000,
+  };
+
+  const comingSoonContent = {
+    backgroundColor: "#fff",
+    padding: "60px 40px",
+    borderRadius: "24px",
+    textAlign: "center",
+    maxWidth: "500px",
+    boxShadow: "0 20px 60px rgba(0,0,0,0.3)",
+  };
+
+  const comingSoonTitle = {
+    fontSize: "36px",
+    fontWeight: "bold",
+    color: "#e60012",
+    marginBottom: "16px",
+    fontFamily: "Arial, sans-serif",
+  };
+
+  const comingSoonText = {
+    fontSize: "18px",
+    color: "#333",
+    marginBottom: "32px",
+    lineHeight: 1.4,
   };
 
   const handleMouseEnter = (e) => {
@@ -155,57 +194,94 @@ const RecipesHeroInlineAnimated = () => {
     e.currentTarget.style.transform = "scale(1)";
   };
 
-  // ✅ Helper function to construct image URLs properly
+  const handleRecipeClick = () => {
+    setShowComingSoon(true);
+  };
+
+  const closeComingSoon = () => {
+    setShowComingSoon(false);
+  };
+
+  // Helper function to construct image URLs properly
   const getImageUrl = (file) => {
     if (!file) return "";
     return file.url.startsWith('http') ? file.url : `${API_BASE}${file.url}`;
   };
 
   return (
-    <section ref={sectionRef} style={outerStyle}>
-      <div style={innerStyle}>
-        <div style={leftStyle}>
-          <h2 style={titleStyle}>
-            <span style={titleSpanStyle}>Indomie</span>
-            Recipes
-          </h2>
-
-          <div style={gridStyle}>
-            {thumbs.map((img, index) => (
-              <div key={img.id} style={cardStyle}>
-                <div style={imgWrapperStyle}>
-                  <img
-                    src={getImageUrl(img)}
-                    alt={img.alternativeText || img.name}
-                    style={imgStyle}
-                    onMouseEnter={handleMouseEnter}
-                    onMouseLeave={handleMouseLeave}
-                  />
-                </div>
-                <p style={textStyle}>
-                  {index === 0 &&
-                    "Indomie Chicken Frikasse this Valentine – Valentine Recipe"}
-                  {index === 1 &&
-                    "Six delicious steps to enjoying a plate of Indomie Offal Mix"}
-                  {index === 2 &&
-                    "Enjoy to make “Indomie Rose Mary Stir-fry” this valentine"}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div style={rightStyle}>
-          {!isMobile && kookpic && (
-            <img
-              src={getImageUrl(kookpic)}
-              alt={kookpic.alternativeText || kookpic.name}
-              style={mainImgStyle}
-            />
-          )}
+    <>
+      {/* MODAL OVERLAY - Always in DOM but conditionally visible */}
+      <div style={comingSoonStyle} onClick={closeComingSoon}>
+        <div style={comingSoonContent} onClick={(e) => e.stopPropagation()}>
+          <h2 style={comingSoonTitle}>Coming Soon!</h2>
+          <p style={comingSoonText}>
+            This recipe is coming soon. Stay tuned for delicious Indomie recipes!
+          </p>
+          <button
+            onClick={closeComingSoon}
+            style={{
+              backgroundColor: "#e60012",
+              color: "white",
+              padding: "16px 32px",
+              border: "none",
+              borderRadius: "12px",
+              fontSize: "16px",
+              fontWeight: "bold",
+              cursor: "pointer",
+              fontFamily: "Arial, sans-serif",
+            }}
+          >
+            Close
+          </button>
         </div>
       </div>
-    </section>
+
+      {/* MAIN COMPONENT - Always renders */}
+      <section ref={sectionRef} style={outerStyle}>
+        <div style={innerStyle}>
+          <div style={leftStyle}>
+            <h2 style={titleStyle}>
+              <span style={titleSpanStyle}>Indomie</span>
+              Recipes
+            </h2>
+
+            <div style={gridStyle}>
+              {thumbs.map((img, index) => (
+                <div key={img.id} style={cardStyle} onClick={handleRecipeClick}>
+                  <div style={imgWrapperStyle}>
+                    <img
+                      src={getImageUrl(img)}
+                      alt={img.alternativeText || img.name}
+                      style={imgStyle}
+                      onMouseEnter={handleMouseEnter}
+                      onMouseLeave={handleMouseLeave}
+                    />
+                  </div>
+                  <p style={textStyle}>
+                    {index === 0 &&
+                      "Indomie Chicken Frikasse this Valentine – Valentine Recipe"}
+                    {index === 1 &&
+                      "Six delicious steps to enjoying a plate of Indomie Offal Mix"}
+                    {index === 2 &&
+                      "Enjoy to make “Indomie Rose Mary Stir-fry” this valentine"}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div style={rightStyle}>
+            {!isMobile && kookpic && (
+              <img
+                src={getImageUrl(kookpic)}
+                alt={kookpic.alternativeText || kookpic.name}
+                style={mainImgStyle}
+              />
+            )}
+          </div>
+        </div>
+      </section>
+    </>
   );
 };
 
